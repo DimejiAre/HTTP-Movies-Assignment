@@ -25,7 +25,7 @@ function MovieForm(props){
     }
 
     const submit = (formValues, action) =>{
-        if(formValues.id){
+        if(currentMovie !== undefined){
             edit(formValues,action)
         }
         else {
