@@ -1,11 +1,34 @@
 import React from 'react';
 import {Formik, Field, Form, ErrorMessage} from 'formik';
+import axios from 'axios';
 
 function MovieForm(props){
+    const {currentMovie} = props;
+
+    const submit = (formValues, action) => {
+        if(typeof(formValues.stars) === 'string'){
+            formValues.stars = formValues.stars.split(',')
+        }
+        const params = {...formValues, id: currentMovie.id}
+        axios.put(`http://localhost:5000/api/movies/${currentMovie.id}`, params)
+        .then(() => {
+            action.resetForm();
+            props.history.replace("/")
+        })
+        .catch(err => {
+            alert(err.message)
+        })
+    }
+
     return(
         <Formik 
-        initialValues={''}
-        onSubmit={props.submit}
+        initialValues={{
+            title: currentMovie.title,
+            director: currentMovie.director,
+            metascore: currentMovie.metascore,
+            stars: currentMovie.stars
+        }}
+        onSubmit={submit}
         render={props => {
             return (
                 <Form>
