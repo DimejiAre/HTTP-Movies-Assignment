@@ -33,6 +33,12 @@ const App = () => {
           return <MovieForm {...props} currentMovie={currentMovie}/>;
         }}
       />
+      <Route
+        path="/add-movie"
+        render={props => {
+          return <MovieForm {...props}/>;
+        }}
+      />
     </>
   );
 };

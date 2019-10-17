@@ -4,8 +4,35 @@ import axios from 'axios';
 
 function MovieForm(props){
     const {currentMovie} = props;
+    let initialValues;
+    
+    if(currentMovie){
+        initialValues = {
+            title: currentMovie.title,
+            director: currentMovie.director,
+            metascore: currentMovie.metascore,
+            stars: currentMovie.stars
+        }
+    }
+    else {
+        initialValues = {
+            title: '',
+            director: '',
+            metascore: '',
+            stars: '',
+        }
+    }
 
-    const submit = (formValues, action) => {
+    const submit = (formValues, action) =>{
+        if(formValues.id){
+            edit(formValues,action)
+        }
+        else {
+            add(formValues,action)
+        }
+    }
+
+    const edit = (formValues, action) => {
         if(typeof(formValues.stars) === 'string'){
             formValues.stars = formValues.stars.split(',')
         }
@@ -20,14 +47,23 @@ function MovieForm(props){
         })
     }
 
+    const add = (formValues, action) => {
+        if(typeof(formValues.stars) === 'string'){
+            formValues.stars = formValues.stars.split(',')
+        }
+        axios.post('http://localhost:5000/api/movies/', formValues)
+        .then(() => {
+            action.resetForm();
+            props.history.replace("/")
+        })
+        .catch(err => {
+            alert(err.message)
+        })
+    }
+
     return(
         <Formik 
-        initialValues={{
-            title: currentMovie.title,
-            director: currentMovie.director,
-            metascore: currentMovie.metascore,
-            stars: currentMovie.stars
-        }}
+        initialValues={initialValues}
         onSubmit={submit}
         render={props => {
             return (
